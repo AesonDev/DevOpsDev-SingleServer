@@ -23,6 +23,23 @@ services:
         image: prom/node-exporter
         container_name: node_exporter
         restart: unless-stopped
+        volumes: 
+          - /proc:/host/proc
+          - /sys:/host/sys
+          - /:/rootfs
+        command:
+          - '--path.procfs=/host/proc'   
+          - '--path.sysfs=/host/sys' 
+          - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
         ports: 
           - 9100:9100
-
+    cadvisor:
+        image: google/cadvisor
+        container_name: caAdvisor
+        volumes: 
+          - /:/rootfs:ro
+          - /var/run:/var/run:rw
+          - /sys:/sys:ro
+          - /var/lib/docker/:/var/lib/docker:ro
+        ports:
+          - 8080:8080
