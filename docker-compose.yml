@@ -2,6 +2,7 @@ version: '3'
 
 volumes: 
     prometheus_data: {}
+    grafana_data: {}
 
 services: 
 
@@ -23,14 +24,6 @@ services:
         image: prom/node-exporter
         container_name: node_exporter
         restart: unless-stopped
-        volumes: 
-          - /proc:/host/proc
-          - /sys:/host/sys
-          - /:/rootfs
-        command:
-          - '--path.procfs=/host/proc'   
-          - '--path.sysfs=/host/sys' 
-          - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
         ports: 
           - 9100:9100
     cadvisor:
@@ -43,3 +36,11 @@ services:
           - /var/lib/docker/:/var/lib/docker:ro
         ports:
           - 8080:8080
+    grafana:
+        image: grafana/grafana
+        container_name: grafana
+        restart: unless-stopped
+        ports: 
+           - 3000:3000
+        volumes:    
+           - grafana_data:/var/lib/grafana
