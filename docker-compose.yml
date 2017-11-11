@@ -29,6 +29,7 @@ services:
     cadvisor:
         image: google/cadvisor
         container_name: caAdvisor
+        restart: unless-stopped
         volumes: 
           - /:/rootfs:ro
           - /var/run:/var/run:rw
@@ -41,6 +42,33 @@ services:
         container_name: grafana
         restart: unless-stopped
         ports: 
-           - 3000:3000
+             - 3000:3000
         volumes:    
            - grafana_data:/var/lib/grafana
+    proget-postgres:
+        image: postgres:9.5
+        container_name: proget-postgres
+        restart: unless-stopped
+        volumes:
+          - /var/proget/db:/var/lib/postgresql/data
+    proget:
+        image: inedo/proget
+        container_name: proget
+        volumes:
+          - /var/proget/packages:/var/proget/packages
+          - /var/proget/extensions:/var/proget/extensions
+        restart: unless-stopped
+        ports: 
+          - 80:80
+        depends_on:
+          - proget-postgres
+    teamcity-server:
+        image:  jetbrains/teamcity-server
+        container_name: teamcity-server
+        volumes: 
+          - /var/teamcity_server/data:/data/teamcity_server/datadir
+          - /var/teamcity_server/logs:/data/teamcity_server/logs
+        restart: unless-stopped
+        ports: 
+          - 81:8111
+
