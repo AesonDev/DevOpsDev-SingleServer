@@ -3,7 +3,7 @@ version: '3'
 volumes: 
     prometheus_data: {}
     grafana_data: {}
-
+    rabbitmq01_data: {}
 services: 
 
     prometheus:
@@ -71,4 +71,40 @@ services:
         restart: unless-stopped
         ports: 
           - 81:8111
+    teamcity-agent-01:
+        image: gjaminon/teamcity-agent-aspnetcore
+        container_name: teamcity-agent-01
+        environment: 
+           - SERVER_URL=teamcity-server:8111
+        volumes: 
+           - /var/data/teamcity_agent_01/config:/data/teamcity_agent/conf
+    rabbitmq-01:
+        image: gjaminon/rabbitmq
+        container_name: rabbitmq-01
+        hostname: rabbitmq1
+        ports:
+          - "15672:15672"
+          - "5672:5672"
+        volumes:
+          - rabbitmq01_data:/var/lib/rabbitmq/mnesia
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
