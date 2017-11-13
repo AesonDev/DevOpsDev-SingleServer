@@ -5,6 +5,7 @@ volumes:
     grafana_data: {}
     rabbitmq01_data: {}
     elasticsearch_data: {}
+    mssqlserver_data: {}
 services: 
 
     prometheus:
@@ -106,8 +107,17 @@ services:
         restart: unless-stopped
         ports: 
            - 9108:9108
-
-
+    mssqlserver:
+        image:  microsoft/mssql-server-linux:2017-latest
+        container_name: mssqlserver
+        restart: unless-stopped
+        environment: 
+          ACCEPT_EULA: Y
+          SA_PASSWORD: "DevOpsSql123"          
+        ports: 
+          - 1433:1433
+        volumes: 
+          - mssqlserver_data:/var/opt/mssql
 
 
 
