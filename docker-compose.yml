@@ -4,6 +4,7 @@ volumes:
     prometheus_data: {}
     grafana_data: {}
     rabbitmq01_data: {}
+    elasticsearch_data: {}
 services: 
 
     prometheus:
@@ -81,15 +82,30 @@ services:
     rabbitmq-01:
         image: gjaminon/rabbitmq
         container_name: rabbitmq-01
+        restart: unless-stopped
         hostname: rabbitmq1
         ports:
           - "15672:15672"
           - "5672:5672"
         volumes:
           - rabbitmq01_data:/var/lib/rabbitmq/mnesia
-
-
-
+    elasticsearch: 
+        image: gjaminon/elasticsearch-kibana-dev
+        container_name: elasticsearch
+        restart: unless-stopped
+        ports: 
+          - "9200:9200"
+          - "5601:5601"
+        volumes: 
+          -  elasticsearch_data:/usr/share/elasticsearch/data
+    elasticsearch-exporter:
+        image: gjaminon/elasticsearch_exporter
+        container_name: elasticsearch-exporter
+        command: 
+           - '-es.uri=http://elasticsearch:9200'
+        restart: unless-stopped
+        ports: 
+           - 9108:9108
 
 
 
